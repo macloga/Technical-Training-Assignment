@@ -1,0 +1,130 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+class Student {
+    private int rollNo;
+    private String name;
+    private int[] marks;
+
+    public Student(int rollNo, String name, int[] marks) {
+        this.rollNo = rollNo;
+        this.name = name;
+        this.marks = marks;
+    }
+
+    public int getRollNo() {
+        return rollNo;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int[] getMarks() {
+        return marks;
+    }
+
+    public int getTotalMarks() {
+        int total = 0;
+        for (int mark : marks) {
+            total += mark;
+        }
+        return total;
+    }
+
+    public double getPercentage() {
+        return ((double) getTotalMarks() / (marks.length * 100)) * 100;
+    }
+
+    public String getGrade() {
+        double percentage = getPercentage();
+        if (percentage >= 90) {
+            return "A";
+        } else if (percentage >= 80) {
+            return "B";
+        } else if (percentage >= 70) {
+            return "C";
+        } else if (percentage >= 60) {
+            return "D";
+        } else {
+            return "F";
+        }
+    }
+}
+
+class ReportCardGenerator extends JFrame implements ActionListener {
+    JTextField rollNoField, nameField, mark1Field, mark2Field, mark3Field;
+    JTextArea reportArea;
+
+    public ReportCardGenerator() {
+        setTitle("Student Report Card");
+        setSize(400, 300);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(7, 2));
+
+        panel.add(new JLabel("Roll No: "));
+        rollNoField = new JTextField();
+        panel.add(rollNoField);
+
+        panel.add(new JLabel("Name: "));
+        nameField = new JTextField();
+        panel.add(nameField);
+
+        panel.add(new JLabel("Science: "));
+        mark1Field = new JTextField();
+        panel.add(mark1Field);
+
+        panel.add(new JLabel("Nepali: "));
+        mark2Field = new JTextField();
+        panel.add(mark2Field);
+
+        panel.add(new JLabel("Maths: "));
+        mark3Field = new JTextField();
+        panel.add(mark3Field);
+
+        JButton generateButton = new JButton("Generate Report Card");
+        generateButton.addActionListener(this);
+        panel.add(generateButton);
+
+        reportArea = new JTextArea();
+        reportArea.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(reportArea);
+        panel.add(scrollPane);
+
+        add(panel);
+        setVisible(true);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getActionCommand().equals("Generate Report Card")) {
+            int rollNo = Integer.parseInt(rollNoField.getText());
+            String name = nameField.getText();
+            int[] marks = {
+                    Integer.parseInt(mark1Field.getText()),
+                    Integer.parseInt(mark2Field.getText()),
+                    Integer.parseInt(mark3Field.getText())
+            };
+
+            Student student = new Student(rollNo, name, marks);
+
+            StringBuilder report = new StringBuilder();
+            report.append("Roll No: ").append(student.getRollNo()).append("\n");
+            report.append("Name: ").append(student.getName()).append("\n");
+            report.append("Total Marks: ").append(student.getTotalMarks()).append("\n");
+            report.append("Percentage: ").append(String.format("%.2f", student.getPercentage())).append("%\n");
+            report.append("Grade: ").append(student.getGrade()).append("\n");
+
+            reportArea.setText(report.toString());
+        }
+    }
+}
+
+public class main {
+    public static void main(String[] args) {
+        new ReportCardGenerator();
+    }
+}
